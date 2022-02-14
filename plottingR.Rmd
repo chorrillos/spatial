@@ -3,7 +3,6 @@
 ```{r}
 library(sf)
 
-baseMap=read_sf("selecDisMap.gpkg")
 probables=read_sf("MostLikelyZG.gpkg")
 grises=read_sf("selecDisMap.gpkg")
 grises=grises[grises$Zona=='ZG' & grises$SpotsNBI=='3 coldSpot',]
@@ -18,28 +17,29 @@ library(leaflet)
 CENTER_of_MAP="function(btn, map){map.setView([-10, -75], 6)}" #ltln
 
 
-baseLayer=leaflet()%>%
-             addProviderTiles("CartoDB.Positron")
 
-demoPlot=baseLayer %>% 
+demoPlot=leaflet()%>%
+          addProviderTiles("CartoDB.Positron")%>%
+  
           addPolygons(data=probables,
                       label = ~provDist,
-                      weight = 0.5, #border thickness
-                      color = "red",#border color
+                      weight = 0.5, #borde
+                      color = "red",#color
                       group = "probables",
                       fillOpacity = 0.4) %>%
             addPolygons(data= grises,
                         label = ~provDist,
-                      weight = 0.5, #border thickness
-                      color = "silver",#border color
-                      group = "grises",
-                      fillOpacity = 0.4) %>% 
+                        weight = 0.5, 
+                        color = "green",
+                        group = "grises",
+                        fillOpacity = 0.4) %>% 
+  # capas
   addLayersControl(
     overlayGroups = c("probables", "grises"),
     options = layersControlOptions(collapsed = FALSE)
   )%>% hideGroup("probables")%>% 
 
-    # adding the button
+    # zoom
     addEasyButton(
         easyButton(icon="fa-home", # a symbol
                    title="Zoom to Level 1",
