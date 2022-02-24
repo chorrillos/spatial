@@ -1,0 +1,61 @@
+
+```{r}
+library(rio)
+data=import("variables.seleccionadas_21FEB.xlsx")
+```
+
+
+```{r}
+data$DepaDist=paste(data$DEPARTAMENTO,data$PROVINCIA,data$Distrito,sep = "-")
+names(data)
+sel=c("cobertura.cell","Educ.sec.comp","esp.vid.nacer","Ing.fam.p.cap","NBS.2017","No.Pobreza","Tasa.docen_pub")
+dataclust=data[,sel]
+rownames(dataclust)=data$DepaDist
+```
+
+```{r}
+boxplot(scale(dataclust),horizontal = T,las=2)
+```
+```{r}
+cor(dataclust)
+```
+
+
+```{r}
+dataclust=as.data.frame(scale(dataclust))
+```
+```{r}
+library(cluster)
+set.seed(123)
+distances=daisy(dataclust,metric='gower')
+```
+
+```{r}
+library(factoextra)
+fviz_nbclust(dataclust, 
+             pam,
+             diss=distances,
+             method = "gap_stat",
+             k.max = 10,verbose = F)
+```
+
+```{r}
+fviz_nbclust(dataclust, 
+             hcut,
+             diss=distances,
+             method = "gap_stat",
+             k.max = 10,
+             verbose = F,
+             hc_func = "agnes")
+```
+
+```{r}
+fviz_nbclust(dataclust, 
+             hcut,
+             diss=distances,
+             method = "gap_stat",
+             k.max = 10,
+             verbose = F,
+             hc_func = "diana")
+```
+
